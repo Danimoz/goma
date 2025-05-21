@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar";
 import { Toaster } from "sonner"
 import { SessionProvider } from "next-auth/react";
 import Footer from "@/components/footer";
+import { Suspense } from "react";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -38,7 +39,9 @@ export default function RootLayout({
         <SessionProvider>
           <Navbar />
           <div className="font-[family-name:var(--font-lato)]">
-            {children}
+            <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+              {children}
+            </Suspense>
           </div>
           <Toaster position="top-right" richColors closeButton />
           <Footer />
