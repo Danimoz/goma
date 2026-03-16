@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { Toaster } from "sonner"
 import { SessionProvider } from "next-auth/react";
+import { SWRConfig } from "swr";
 import Footer from "@/components/footer";
 import { Suspense } from "react";
 
@@ -36,16 +37,18 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} ${lato.variable} antialiased`}
       >
-        <SessionProvider>
-          <Navbar />
-          <div className="font-[family-name:var(--font-lato)]">
-            <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
-              {children}
-            </Suspense>
-          </div>
-          <Toaster position="top-right" richColors closeButton />
-          <Footer />
-        </SessionProvider>
+        <SWRConfig value={{ revalidateOnFocus: false, revalidateOnReconnect: false, dedupingInterval: 10000 }}>
+          <SessionProvider>
+            <Navbar />
+            <div className="font-[family-name:var(--font-lato)]">
+              <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+                {children}
+              </Suspense>
+            </div>
+            <Toaster position="top-right" richColors closeButton />
+            <Footer />
+          </SessionProvider>
+        </SWRConfig>
       </body>
     </html>
   );
