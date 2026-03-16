@@ -30,6 +30,11 @@ enum TermType {
   THIRD
 }
 
+enum PostType {
+  EVENT
+  NEWS
+}
+
 model User {
   id           String   @id @default(cuid())
   firstName    String
@@ -164,4 +169,16 @@ model TermReport {
   updatedAt DateTime @updatedAt
 
   @@unique([studentId, termId])
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  content   String
+  type      PostType
+  eventDate DateTime?
+  location  String?
+  published Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

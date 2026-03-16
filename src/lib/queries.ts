@@ -160,3 +160,23 @@ export async function getClassByAcademicSession(academicSessionId: string, teach
     return [];
   }
 }
+
+export async function getLatestNews(limit: number = 3) {
+  return prisma.post.findMany({
+    where: { type: 'NEWS', published: true },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+  });
+}
+
+export async function getUpcomingEvents(limit: number = 3) {
+  return prisma.post.findMany({
+    where: {
+      type: 'EVENT',
+      published: true,
+      eventDate: { gte: new Date() },
+    },
+    orderBy: { eventDate: 'asc' },
+    take: limit,
+  });
+}

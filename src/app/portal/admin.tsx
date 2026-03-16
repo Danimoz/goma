@@ -1,5 +1,6 @@
 import AdminsList from "@/components/admin-list";
 import CreateUserForm from "@/components/create-user-form";
+import PostsManagement from "@/components/posts-management";
 import StudentsList from "@/components/students-list";
 import TeachersList from "@/components/teachersList";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -25,6 +26,7 @@ export default function AdminPage() {
               <TabsTrigger value="teachers">Teacher</TabsTrigger>
               <TabsTrigger value="students">Student</TabsTrigger>
               <TabsTrigger value="admins">Admins</TabsTrigger>
+              <TabsTrigger value="posts">Posts</TabsTrigger>
             </TabsList>
             <TabsContent value="teachers">
               <TeachersList />
@@ -34,6 +36,9 @@ export default function AdminPage() {
             </TabsContent>
             <TabsContent value="admins">
               <AdminsList />
+            </TabsContent>
+            <TabsContent value="posts">
+              <PostsManagement />
             </TabsContent>
           </Tabs>
         </CardContent>

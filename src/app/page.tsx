@@ -1,15 +1,20 @@
 import EnrollmentBanner from "@/components/enrollment-banner";
 import { Button } from "@/components/ui/Button";
-import { ArrowRight, Star, Users } from "lucide-react";
+import { ArrowRight, CalendarDays, MapPin, Newspaper, Star, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { missions, programs, testimonials } from "./page.constants";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import { getLatestNews, getUpcomingEvents } from "@/lib/queries";
 
 import schoolBuilding from "@images/goma-building.jpg";
 import studentsImg from "@images/goma-students.jpg";
 
-export default function Home() {
+export default async function Home() {
+  const [latestNews, upcomingEvents] = await Promise.all([
+    getLatestNews(3),
+    getUpcomingEvents(3),
+  ]);
   return (
     <main>
       <section className="py-12 md:py-24 lg:py-32 bg-gradient-to-r from-stark-white-400 to-stark-white-500 relative overflow-hidden">
@@ -83,7 +88,81 @@ export default function Home() {
           </ul>
         </div>
       </section>
-      
+
+      {(latestNews.length > 0 || upcomingEvents.length > 0) && (
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-stark-white-400 to-stark-white-500">
+          <div className="px-4 md:mx-auto max-w-5xl">
+            <div className="space-y-2 text-center pb-8">
+              <p className="inline-block rounded-lg bg-congress-blue-100 px-3 py-1 text-sm text-congress-blue-500 font-medium">
+                Stay Updated
+              </p>
+              <h2 className="text-3xl font-bold tracking-wide md:text-5xl text-congress-blue-700">News & Events</h2>
+              <p className="text-gray-500 md:text-xl/relaxed">
+                Stay informed about the latest happenings at God&apos;s Own Model Academy.
+              </p>
+            </div>
+
+            <div className={`grid gap-8 ${latestNews.length > 0 && upcomingEvents.length > 0 ? 'md:grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}>
+              {upcomingEvents.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold text-congress-blue-700 mb-4 flex items-center gap-2">
+                    <CalendarDays className="h-5 w-5" /> Upcoming Events
+                  </h3>
+                  <div className="space-y-4">
+                    {upcomingEvents.map((event) => (
+                      <Card key={event.id} className="border-congress-blue-200 shadow-sm hover:shadow-md transition-shadow">
+                        <CardContent className="pt-4 pb-4">
+                          <h4 className="font-semibold text-congress-blue-700">{event.title}</h4>
+                          <div className="flex flex-wrap gap-3 mt-1 text-sm text-gray-500">
+                            {event.eventDate && (
+                              <span className="flex items-center gap-1">
+                                <CalendarDays className="h-3 w-3" />
+                                {new Date(event.eventDate).toLocaleDateString('en-NG', {
+                                  weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+                                })}
+                              </span>
+                            )}
+                            {event.location && (
+                              <span className="flex items-center gap-1">
+                                <MapPin className="h-3 w-3" /> {event.location}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-gray-600 text-sm mt-2 line-clamp-2">{event.content}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {latestNews.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold text-congress-blue-700 mb-4 flex items-center gap-2">
+                    <Newspaper className="h-5 w-5" /> Latest News
+                  </h3>
+                  <div className="space-y-4">
+                    {latestNews.map((news) => (
+                      <Card key={news.id} className="border-congress-blue-200 shadow-sm hover:shadow-md transition-shadow">
+                        <CardContent className="pt-4 pb-4">
+                          <h4 className="font-semibold text-congress-blue-700">{news.title}</h4>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {new Date(news.createdAt).toLocaleDateString('en-NG', {
+                              year: 'numeric', month: 'short', day: 'numeric'
+                            })}
+                          </p>
+                          <p className="text-gray-600 text-sm mt-2 line-clamp-3">{news.content}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
       <section id="academics" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-stark-white-400 to-stark-white-500">
         <div className="mx-auto max-w-5xl pb-6 px-4">
           <div className="space-y-2 text-center">
@@ -92,8 +171,8 @@ export default function Home() {
             </p>
             <h2 className="text-3xl font-bold tracking-wide md:text-5xl text-congress-blue-700">Educational Programs</h2>
             <p className="text-gray-500 md:text-xl/relaxed">
-              We offer comprehensive educational programs designed to meet the needs of students at every stage of their academic journey.           
-             </p>
+              We offer comprehensive educational programs designed to meet the needs of students at every stage of their academic journey.
+            </p>
           </div>
         </div>
         <div className="mx-auto max-w-5xl grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4 mt-8">
@@ -161,7 +240,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-stark-white-400 to-stark-white-600">
         <div className="px-4 space-y-2 text-center pb-6">
           <h2 className="text-3xl font-bold tracking-wide md:text-5xl text-congress-blue-700">Join Us Today!</h2>

@@ -12,6 +12,12 @@ import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 
 export default function Apply() {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+  }
+  
   return (
     <main>
       <section className="py-12 md:py-24 lg:py-32 bg-gradient-to-r from-stark-white-400 to-stark-white-600 relative overflow-hidden">

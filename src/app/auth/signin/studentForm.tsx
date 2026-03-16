@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function StudentForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const { replace } = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/portal";
+  const callbackParam = searchParams.get("callbackUrl") || "/portal";
+  const callbackUrl = callbackParam.startsWith("/") ? callbackParam : "/portal";
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -19,7 +19,7 @@ export default function StudentForm() {
     const formData = new FormData(event.currentTarget);
     const lastName = formData.get('lastName');
     const firstName = formData.get('firstName');
-    
+
     const access = await signIn("credentials", {
       role: "STUDENT",
       identifier: `${firstName} ${lastName}`,
@@ -30,8 +30,7 @@ export default function StudentForm() {
       setIsLoading(false);
       return;
     }
-    replace(callbackUrl);
-    setIsLoading(false);
+    window.location.replace(callbackUrl);
   }
 
   return (
@@ -44,7 +43,7 @@ export default function StudentForm() {
         <Label htmlFor="firstName">First Name</Label>
         <Input id='firstName' name="firstName" required />
       </div>
-      
+
       <Button type="submit" className="w-full bg-stark-white-600" disabled={isLoading}>
         {isLoading ? "Loading..." : "Sign In"}
       </Button>

@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function TeacherForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const { replace } = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/portal";
+  const callbackParam = searchParams.get("callbackUrl") || "/portal";
+  const callbackUrl = callbackParam.startsWith("/") ? callbackParam : "/portal";
   const role = searchParams.get("role") || "TEACHER";
-    
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);
@@ -31,15 +31,14 @@ export default function TeacherForm() {
       setIsLoading(false);
       return;
     }
-    replace(callbackUrl);
-    setIsLoading(false);
+    window.location.replace(callbackUrl);
   }
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div>
         <Label htmlFor="email">Email</Label>
-        <Input id='email'type="email" name="email" required />
+        <Input id='email' type="email" name="email" required />
       </div>
       <div>
         <Label htmlFor="password">Password</Label>
