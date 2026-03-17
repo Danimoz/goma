@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { PostType } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -60,6 +61,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    revalidatePath('/');
     return Response.json(post, { status: 201 });
   } catch (error) {
     console.error("Create post error:", error);

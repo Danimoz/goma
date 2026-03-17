@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { PostType } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { NextRequest } from "next/server";
 
 export async function PUT(
@@ -37,6 +38,7 @@ export async function PUT(
       },
     });
 
+    revalidatePath('/');
     return Response.json(post, { status: 200 });
   } catch (error) {
     console.error("Update post error:", error);
@@ -57,6 +59,7 @@ export async function DELETE(
 
   try {
     await prisma.post.delete({ where: { id } });
+    revalidatePath('/');
     return Response.json({ message: "Post deleted" }, { status: 200 });
   } catch (error) {
     console.error("Delete post error:", error);
